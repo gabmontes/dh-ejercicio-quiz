@@ -1,0 +1,17 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": false
+  },
+  "extends": "eslint:recommended",
+  "globals": {
+    "$": true,
+    "quizUI": true,
+    "Quiz": true,
+    "Question": true
+  }
+}

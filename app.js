@@ -1,4 +1,3 @@
-
 var questions = [
   {
     text: '¿Cuál es la dirección de DH?',
@@ -15,7 +14,6 @@ var questions = [
 var questionObjects = questions.map(function (q) {
   return new Question(q.text, q.options, q.correct)
 })
-
 var quiz = new Quiz(questionObjects)
 
-render(quiz)
+quizUI.render(quiz)
