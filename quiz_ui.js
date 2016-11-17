@@ -1,37 +1,51 @@
-var quizUI = {
-  renderOption: function (text, i) {
-    var self = this
-    var quiz = this.quiz
+function quizOption({ option, correct }) {
+  return `
+    <p>${option}</p>
+    <button class="btn--default" onclick="processAnswer(${correct})">Select Answer</button>
+  `
+}
 
-    var $pElement = $(`<p>${text}</p>`)
+function quizQuestion({ question }) {
+  return `
+    <div>
+      <h1>Awesome Quiz</h1>
+      <h2class="headline-secondary--grouped">${question.text}</h2>
+      <div>
+        ${question.options.map((option, i) => quizOption({ option, correct: question.correct === i })).join('')}
+      </div>
+    </div>
+  `
+}
 
-    var $buttonElement = $(`<button class="btn--default">Select Answer</button>`)
-    $buttonElement.click(function () {
-      quiz.processAnswer(i)
-      self.render(quiz)
-    })
+function quizFooter({ current, questions }) {
+  return `
+    <footer>
+      <p>Question ${current + 1} of ${questions.length}</p>
+    </footer>
+  `
+}
 
-    var $optionsElement = $('#options')
-    $optionsElement.append($pElement)
-    $optionsElement.append($buttonElement)
-  },
+function quizOver({ score }) {
+  return `
+    <div class="centered grid__col--8">
+      <h1>Game Over</h1>
+      <h2>Your score is: <span>${score}</span></h2>
+    </div>
+  `
+}
 
-  render: function (quiz) {
-    this.quiz = quiz
-
-    if (quiz.hasMoreQuestion()) {
-      var q = quiz.getCurrentQuestion()
-
-      $('#question').text(q.getText())
-
-      $('#options').html("")
-      quiz.getQuestionOptions().forEach(this.renderOption.bind(this))
-
-      $('#progress').text(`Question ${quiz.getCurrentIndex() + 1} of ${quiz.getTotalQuestions()}`)
-    } else {
-      $('#quiz').toggleClass('hidden')
-      $('#over').toggleClass('hidden')
-      $('#final-score').text(quiz.getScore())
-    }
+function quiz({ questions, current, score }) {
+  if (current < questions.length) {
+    var question = questions[current]
+    return `
+      <div class="centered grid__col--8">
+        ${
+          quizQuestion({ question }) +
+          quizFooter({ current, questions })
+        }
+      </div>
+    `
+  } else {
+    return quizOver({ score })
   }
 }

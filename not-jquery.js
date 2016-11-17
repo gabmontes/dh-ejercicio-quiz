@@ -7,26 +7,22 @@
  * https://gist.github.com/gabmontes/535a7b3b059b2a301a55b43e90ee0101
  */
 
-(function (global) {
+// eslint-disable-next-line no-extra-semi
+;(function (global) {
   const jqMethods = {
+    // $().append()
+    append: function (content) {
+      this._elements.forEach(function (elem) {
+        content.each(function () {
+          elem.appendChild(this)
+        })
+      })
+      return this
+    },
     // $().click()
     click: function (handler) {
       this._elements.forEach(function (elem) {
         elem.addEventListener('click', handler)
-      })
-      return this
-    },
-    // $().text()
-    text: function (text) {
-      this._elements.forEach(function (elem) {
-        elem.textContent = text
-      })
-      return this
-    },
-    // $().html()
-    html: function (html) {
-      this._elements.forEach(function (elem) {
-        elem.innerHTML = html
       })
       return this
     },
@@ -39,13 +35,6 @@
       })
       return this
     },
-    // $().toggleClass()
-    toggleClass: function (className) {
-      this._elements.forEach(function (elem) {
-        elem.classList.toggle(className)
-      })
-      return this
-    },
     // $().each()
     each: function (iterator) {
       this._elements.forEach(function (elem, i) {
@@ -53,12 +42,24 @@
       })
       return this
     },
-    // $().append()
-    append: function (content) {
+    // $().html()
+    html: function (html) {
       this._elements.forEach(function (elem) {
-        content.each(function () {
-          elem.appendChild(this)
-        })
+        elem.innerHTML = html
+      })
+      return this
+    },
+    // $().text()
+    text: function (text) {
+      this._elements.forEach(function (elem) {
+        elem.textContent = text
+      })
+      return this
+    },
+    // $().toggleClass()
+    toggleClass: function (className) {
+      this._elements.forEach(function (elem) {
+        elem.classList.toggle(className)
       })
       return this
     }
@@ -68,15 +69,29 @@
     wrapped._elements = elements
     return wrapped
   }
-  // $(html|selector)
-  global.$ = global.$ || function (string) {
+  // $(handler|html|selector)
+  global.$ = global.$ || function (arg) {
+    if (typeof arg === 'function') {
+      // handler to execute on DOM ready
+      const fn = arg
+      if (document.readyState !== 'loading') {
+        fn()
+      } else {
+        document.addEventListener('DOMContentLoaded', fn)
+      }
+      return this
+    }
     let elements
-    if (string.charAt(0) === '<') {
+    if (arg.trim().charAt(0) === '<') {
+      // html string
+      const html = arg
       const parent = document.createElement('div')
-      parent.innerHTML = string
+      parent.innerHTML = html
       elements = parent.children
     } else {
-      elements = document.querySelectorAll(string)
+      // selector
+      const selector = arg
+      elements = document.querySelectorAll(selector)
     }
     return wrap([...elements])
   }

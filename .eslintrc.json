@@ -10,8 +10,8 @@
   "extends": "eslint:recommended",
   "globals": {
     "$": true,
-    "quizUI": true,
-    "Quiz": true,
-    "Question": true
+    "notReactDOM": true,
+    "processAnswer": true,
+    "quiz": true
   }
 }
